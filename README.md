@@ -10,13 +10,18 @@ Deploy directly as helm chart
 Add repos
 ```
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo add kube-state-metrics https://kubernetes.github.io/kube-state-metrics
 helm repo update
 ```
-Install
+Install operator and stack. More info at https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack#kube-prometheus-stack
 ```
 # Helm 3
-helm install [RELEASE_NAME] prometheus-community/prometheus
-# Helm 2
-helm install --name [RELEASE_NAME] prometheus-community/prometheus
+helm install [RELEASE_NAME] prometheus-community/kube-prometheus-stack
 ```
+
+Depending on the platform an error with the hostRootFsMount / mount may arise
+This piece of code path the daemon set to remove mount propagation
+```
+ kubectl patch ds prometheus-node-exporter --type "json" -p '[{"op": "remove", "path" : "/spec/template/spec/containers/0/volumeMounts/2/mountPropagation"}]'
+  ```
+  
+ continue reading https://www.infracloud.io/blogs/prometheus-operator-helm-guide/
